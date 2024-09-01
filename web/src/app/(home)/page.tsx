@@ -5,13 +5,17 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function Home() {
-  const { files, setFiles } = useFilesStore((state) => state)
+  const { files, setFiles, loader } = useFilesStore((state) => state)
   const [uploaded, setUpload] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
     if (uploaded) router.push('/compress')
   }, [uploaded, router])
+
+  useEffect(() => {
+    loader()
+  }, [loader])
 
   return (
     <main className="flex min-h-screen w-full flex-col items-center justify-center content-center">
