@@ -19,7 +19,7 @@ export class Router {
       const filePath = join(pathRouter, file)
       const { default: router } = await import(filePath) as { default: Router }
       
-      router.options = Object.assign(router.options, { path: file })
+      router.options = Object.assign(router?.options, { path: file })
     }
 
     for (const router of Router.all) {
@@ -34,6 +34,8 @@ export class Router {
         // caso a rota tenha algum diretório entre () parenteses, eles serão removidos do path
       case regexBrackets.test(path):
         path = path.replace(regexBrackets, '')
+
+      default: path = join('/', path)
       }
 
       for (const method of router.options.method) {

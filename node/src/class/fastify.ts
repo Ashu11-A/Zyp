@@ -1,3 +1,5 @@
+import formbody from '@fastify/formbody'
+import multipart from '@fastify/multipart'
 import fastify, { FastifyInstance } from 'fastify'
 
 interface Options {
@@ -10,7 +12,14 @@ export class Fastify {
   constructor(public options: Options){}
 
   init () {
-    const server = fastify()
+    const server = fastify({ logger: true })
+      .register(multipart, {
+        // attachFieldsToBody: true,
+        limits: {
+          fileSize: 1024 * 1024 * 10
+        }
+      })
+      .register(formbody)
     Fastify.server = server
     return this
   }
