@@ -34,11 +34,15 @@ export class Router {
         // caso a rota tenha algum diretório entre () parenteses, eles serão removidos do path
       case regexBrackets.test(path):
         path = path.replace(regexBrackets, '')
-
+      case path.endsWith('/'): {
+        path = path.slice(0, -1)
+      }
       default: path = join('/', path)
       }
 
+      
       for (const method of router.options.method) {
+        console.log(path, method)
         switch(method.type) {
         case MethodType.Get: {
           Fastify.server.get(path, method.run)
@@ -55,6 +59,9 @@ export class Router {
         case MethodType.Delete: {
           Fastify.server.delete(path, method.run)
           break
+        }
+        case MethodType.Websocket: {
+          Fastify.server.get(path, { websocket: true }, method.run)
         }
         }
       }

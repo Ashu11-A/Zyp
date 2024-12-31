@@ -1,5 +1,7 @@
 'use client'
-import { useFilesStore } from '@/hooks/useFiles'
+import { useOptionsStore } from '@/hooks/useOptions'
+import { db } from '@/lib/db'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import 'react-toastify/ReactToastify.css'
@@ -10,15 +12,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { files } = useFilesStore((state) => state)
+  const images = useLiveQuery(() => db.images)
   const router = useRouter()
+  const { loader } = useOptionsStore((state) => state)
+
+  useEffect(() => {}, [])
 
   useEffect(() => {
-    if (files.length === 0) router.replace('/')
-  }, [files, router])
-  return (
-    <>
-      {children}
-    </>
-  )
+    (async () => {
+      if (await images?.count() === 0) router.replace('/')
+    })()
+  }, [images, router])
+  return <div>{children}</div>
 }

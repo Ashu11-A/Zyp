@@ -1,4 +1,5 @@
 'use client'
+import { db } from '@/lib/db'
 import { cn } from '@/lib/utils'
 import localFont from 'next/font/local'
 import { useRouter } from 'next/navigation'
@@ -21,7 +22,7 @@ const font = localFont({ src: './fonts/DelaGothicOne-Regular.ttf' })
  * {files && files.map((file) => <Image src={URL.createObjectURL(file)} alt={file.name}  width={400} height={400}  key={file.name} ></Image>)}
  * 
  */
-export function Dropzone({ files, setFiles, setUpload }: { files: File[], setFiles: (files: File[]) => void, setUpload: (bool: boolean) => void }): JSX.Element {
+export function Dropzone({ setUpload }: { setUpload: (bool: boolean) => void }): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const dragRef = useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -30,8 +31,15 @@ export function Dropzone({ files, setFiles, setUpload }: { files: File[], setFil
   /**
      * Updates the files state with the newly selected or dropped files.
      */
-  const updateFiles = () => {
-    setFiles([...files, ...inputFiles])
+  const updateFiles = async () => {
+    for (const file of inputFiles) {
+      db.images.add({
+        fileName: file.name,
+        type: file.type,
+        base64: Buffer.from(await file.arrayBuffer()).toString('base64')
+      })
+
+    }
     setUpload(true)
   }
   

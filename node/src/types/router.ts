@@ -4,7 +4,8 @@ export enum MethodType {
     Get = 'Get',
     Post = 'Post',
     Put = 'Put',
-    Delete = 'Delete'
+    Delete = 'Delete',
+    Websocket = 'Websocket'
 }
 
 export type MethodApp = {

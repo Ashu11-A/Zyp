@@ -17,10 +17,11 @@ export default function OptionsActions () {
     for (const image of files) {
       formData.append('file', image)
       formData.append('path', image.name)
+      formData.append('options', JSON.stringify(options))
     }
-    formData.append('options', JSON.stringify(options))
 
-    const response = await  toast.promise(axios.post('/api', formData), {
+
+    const response = await toast.promise(axios.post('/api/compress', formData), {
       pending: 'Pending request...',
       error: 'An error occurred in the request',
       success: 'Successful request'

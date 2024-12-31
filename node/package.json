@@ -5,7 +5,7 @@
   "type": "module",
   "private": "true",
   "scripts": {
-    "dev": "tsx src/app.ts"
+    "dev": "tsx watch src/app.ts"
   },
   "keywords": [],
   "author": "",
@@ -23,9 +23,12 @@
   "dependencies": {
     "@fastify/formbody": "^7.4.0",
     "@fastify/multipart": "^8.3.0",
+    "@fastify/websocket": "^10.0.1",
     "@types/glob": "^8.1.0",
+    "bull": "^4.16.3",
     "fastify": "^4.28.1",
     "glob": "^11.0.0",
+    "sharp": "^0.33.5",
     "zod": "^3.23.8"
   }
 }

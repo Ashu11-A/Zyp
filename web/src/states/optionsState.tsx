@@ -16,7 +16,8 @@ export type OptionsState = {
 }
 
 export type OptionsActions = {
-    setOptions: (options: OptionsState) => void
+  loader: () => void
+  setOptions: (options: OptionsState) => void
 }
 
 export type OptionsStore = OptionsActions & {
@@ -37,6 +38,11 @@ export const createOptionsStore = () => {
       progressive: false,
       sizeType: 'MB',
     },
+    loader: () => (set((state) => {
+      const optionsStore = JSON.parse(localStorage.getItem('options') ?? '{}') ?? {} as OptionsState
+
+      return ({ ...state, options: optionsStore })
+    })),
     setOptions: (options) => set((state) => {
       return ({ ...state, ...options })
     }),

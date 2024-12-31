@@ -1,5 +1,5 @@
-import formbody from '@fastify/formbody'
 import multipart from '@fastify/multipart'
+import websocket from '@fastify/websocket'
 import fastify, { FastifyInstance } from 'fastify'
 
 interface Options {
@@ -19,7 +19,7 @@ export class Fastify {
           fileSize: 1024 * 1024 * 10
         }
       })
-      .register(formbody)
+      .register(websocket)
     Fastify.server = server
     return this
   }
