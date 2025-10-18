@@ -1,20 +1,14 @@
 'use client'
-import { db } from '@/lib/db'
+import { ImageSchema } from '@/database/entities'
+import { useDatabase } from '@/hooks/useDatabase'
 import { cn } from '@/lib/utils'
 import localFont from 'next/font/local'
-import { useRouter } from 'next/navigation'
-import { Dispatch, DragEvent, FormEvent, SetStateAction, useEffect, useRef, useState } from 'react'
+import { DragEvent, FormEvent, useRef, useState } from 'react'
 
 const font = localFont({ src: './fonts/DelaGothicOne-Regular.ttf' })
 
 /**
  * Dropzone component allows users to drag and drop files or click to select files.
- * 
- * @param {Object} props - The component properties.
- * @param {File[]} props.files - The current array of selected files.
- * @param {Dispatch<SetStateAction<File[]>>} props.setFiles - The function to update the selected files.
- * 
- * @returns {JSX.Element} A dropzone area with drag-and-drop and file selection functionality.
  * 
  * @example
  * const [files, setFiles] = useState<File[]>([])
@@ -25,36 +19,41 @@ const font = localFont({ src: './fonts/DelaGothicOne-Regular.ttf' })
 export function Dropzone({ setUpload }: { setUpload: (bool: boolean) => void }): JSX.Element {
   const inputRef = useRef<HTMLInputElement>(null)
   const dragRef = useRef<HTMLDivElement>(null)
-  const [isDragging, setIsDragging] = useState(false)
   const inputFiles: File[] = []
+  const [isDragging, setIsDragging] = useState(false)
+  const { entry, initialized, database } = useDatabase(ImageSchema)
+
+  if (!entry) return <>Carregando Banco de dados {String(database)}</>
 
   /**
-     * Updates the files state with the newly selected or dropped files.
-     */
+   * Updates the files state with the newly selected or dropped files.
+   */
   const updateFiles = async () => {
     for (const file of inputFiles) {
-      db.images.add({
-        fileName: file.name,
+      const image = entry.create({
+        name: file.name,
         type: file.type,
         base64: Buffer.from(await file.arrayBuffer()).toString('base64')
       })
 
+      const result = await entry.save(image)
+      console.log(result)
     }
     setUpload(true)
   }
   
   /**
-     * Handles the click event on the dropzone div, triggering the file input click.
-     */
+   * Handles the click event on the dropzone div, triggering the file input click.
+   */
   const handleDivClick = () => {
     inputRef.current?.click()
   }
   
   /**
-     * Handles the change event on the file input, adding selected files to the file list.
-     * 
-     * @param {FormEvent<HTMLInputElement>} event - The event triggered by the file input change.
-     */
+   * Handles the change event on the file input, adding selected files to the file list.
+   * 
+   * @param {FormEvent<HTMLInputElement>} event - The event triggered by the file input change.
+   */
   const handleFileChange = (event: FormEvent<HTMLInputElement>) => {
     for (const file of event.currentTarget?.files ?? []) inputFiles.push(file)
   
@@ -62,10 +61,10 @@ export function Dropzone({ setUpload }: { setUpload: (bool: boolean) => void }):
   }
   
   /**
-     * Handles the drop event on the dropzone, processing the dropped files.
-     * 
-     * @param {DragEvent<any>} event - The drag event triggered by dropping files.
-     */
+   * Handles the drop event on the dropzone, processing the dropped files.
+   * 
+   * @param {DragEvent<any>} event - The drag event triggered by dropping files.
+   */
   const onDrop = (event: DragEvent<any>) => {
     event.preventDefault()
     event.stopPropagation()

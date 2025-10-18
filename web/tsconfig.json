@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "module": "esnext",
+    "module": "ESNext",
     "moduleResolution": "bundler",
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     
     "downlevelIteration": true,
     "allowJs": true,

@@ -1,15 +1,14 @@
 'use client'
-import { useFilesStore } from '@/hooks/useFiles'
 import { cn } from '@/lib/utils'
 import { HomeIcon } from '@radix-ui/react-icons'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useRouter } from 'next/navigation'
 import { FaCompressAlt } from 'react-icons/fa'
 import { IoImagesOutline } from 'react-icons/io5'
 import SwitchTheme from '../switchTheme'
 import { Button } from '../ui/button'
 import { Card, CardContent } from '../ui/card'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '@/lib/db'
+import { useImages } from '@/hooks/useImage'
 
 interface MenuItems {
   name: string
@@ -20,7 +19,7 @@ interface MenuItems {
 
 export default function NavBar () {
   const router = useRouter()
-  const files = useLiveQuery(() => db.images.toArray())
+  const images = useImages()
   const menuItems: MenuItems[] = [
     {
       name: 'Home',
@@ -31,13 +30,13 @@ export default function NavBar () {
       name: 'Process',
       path: 'compress',
       icon: <FaCompressAlt />,
-      disable: files?.length === 0
+      disable: images.length === 0
     },
     {
       name: 'Gallery',
       path: 'gallery',
       icon: <IoImagesOutline />,
-      disable: files?.length === 0
+      disable: images.length === 0
     }
   ]
   return (

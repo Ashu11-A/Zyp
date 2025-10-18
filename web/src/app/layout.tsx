@@ -1,12 +1,12 @@
+import NavBar from '@/components/bar/NavBar'
+import { ThemeProvider } from '@/components/themeProvider'
+import { Localforage } from '@/lib/localforage'
+import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import './globals.css'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/ReactToastify.css'
-import { ThemeProvider } from '@/components/themeProvider'
-import { FilesStoreProvider } from '@/providers/filesProvider'
-import NavBar from '@/components/bar/navBar'
-import { cn } from '@/lib/utils'
-import { OptionsStoreProvider } from '@/providers/optionsProvider'
+import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,18 +22,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <body className={cn(inter.className, 'md:px-16 min-h-screen w-screen')}>
-        <FilesStoreProvider>
-          <OptionsStoreProvider>
-            <ThemeProvider
-              attribute='class'
-              defaultTheme='system'
-            >
-              <NavBar />
-              {children}
-            </ThemeProvider>
-          </OptionsStoreProvider>
-        </FilesStoreProvider>
+      <body className={cn(inter.className, 'flex md:px-16 min-h-[100dvh] w-screen')}>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+        >
+          <Localforage>
+            <NavBar />
+            <ToastContainer />
+            {children}
+          </Localforage>
+        </ThemeProvider>
       </body>
     </html>
   )

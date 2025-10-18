@@ -1,10 +1,8 @@
 'use client'
-import { useOptionsStore } from '@/hooks/useOptions'
-import { db } from '@/lib/db'
-import { useLiveQuery } from 'dexie-react-hooks'
+import { ImageSchema } from '@/database/entities'
+import { useDatabase } from '@/hooks/useDatabase'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import 'react-toastify/ReactToastify.css'
 import '../globals.css'
 
 export default function RootLayout({
@@ -12,16 +10,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const images = useLiveQuery(() => db.images)
+  const { initialized, entry } = useDatabase(ImageSchema)
   const router = useRouter()
-  const { loader } = useOptionsStore((state) => state)
-
-  useEffect(() => {}, [])
 
   useEffect(() => {
-    (async () => {
-      if (await images?.count() === 0) router.replace('/')
-    })()
-  }, [images, router])
-  return <div>{children}</div>
+    if (entry && initialized) {
+      (async () => {
+        const count = await entry.count()
+
+        if (count === 0) router.push('/')
+      })()
+    }
+  }, [initialized, entry, router])
+
+  return children
 }
